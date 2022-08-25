@@ -4,11 +4,11 @@ import { Form } from './Form/Form';
 import { Filter } from './Filter/Filter';
 import { ContactsList } from './ContactList/ContactsList';
 import { Container } from './Container.styled';
-import initialContacts from './Contacts/Contacts.json';
+// import initialContacts from './Contacts/Contacts.json';
 
 export class App extends Component {
   state = {
-    contacts: initialContacts,
+    contacts: [],
     filter: '',
   };
 
@@ -39,6 +39,21 @@ export class App extends Component {
       filter: e.currentTarget.value,
     });
   };
+
+  componentDidMount() {
+    const contacts = localStorage.getItem('contacts');
+    const parseContacts = JSON.parse(contacts);
+
+    if (parseContacts) {
+      this.setState({ contacts: parseContacts });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
 
   render() {
     const { contacts, filter } = this.state;
