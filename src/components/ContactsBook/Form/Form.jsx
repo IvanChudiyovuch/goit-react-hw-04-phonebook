@@ -1,68 +1,74 @@
 import PropTypes from 'prop-types';
-import { Component } from 'react';
+import { useState } from 'react';
 import { Lable, Input, Forma } from './Form.styled';
 import { Button } from '../ContactList/ContactsList.styled';
 
-export class Form extends Component {
-  static propTypes = {
-    onSubmit: PropTypes.func.isRequired,
+export const Form = ({ onSubmit }) => {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
+
+  const handleValueInputChange = event => {
+    const { name, value } = event.target;
+
+    switch (name) {
+      case 'name':
+        setName(value);
+        break;
+
+      case 'number':
+        setNumber(value);
+        break;
+
+      default:
+        return;
+    }
   };
 
-  state = {
-    name: '',
-    number: '',
-  };
-
-  handleValueInputChange = event => {
-    const { name, value } = event.currentTarget;
-    this.setState({ [name]: value });
-  };
-
-  handleSubmit = event => {
+  const handleSubmit = event => {
     event.preventDefault();
 
-    this.props.onSubmit(this.state);
+    onSubmit(name, number);
 
-    this.reset();
+    reset();
   };
 
-  reset = () => {
-    this.setState({
-      name: '',
-      number: '',
-    });
+  const reset = () => {
+    setName('');
+    setNumber('');
   };
 
-  render() {
-    return (
-      <Forma onSubmit={this.handleSubmit}>
-        <Lable>
-          Name
-          <Input
-            value={this.state.name}
-            onChange={this.handleValueInputChange}
-            type="text"
-            name="name"
-            placeholder="Jacob Mercer"
-            pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-            title="
+  return (
+    <Forma onSubmit={handleSubmit}>
+      <Lable>
+        Name
+        <Input
+          value={name}
+          onChange={handleValueInputChange}
+          type="text"
+          name="name"
+          placeholder="Jacob Mercer"
+          pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+          title="
             Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-            required
-          />
-        </Lable>
+          required
+        />
+      </Lable>
 
-        <Lable>
-          Number
-          <Input
-            type="tel"
-            name="number"
-            value={this.state.number}
-            onChange={this.handleValueInputChange}
-            placeholder="___-__-__"
-          />
-        </Lable>
-        <Button type="submit">Add contact</Button>
-      </Forma>
-    );
-  }
-}
+      <Lable>
+        Number
+        <Input
+          type="tel"
+          name="number"
+          value={number}
+          onChange={handleValueInputChange}
+          placeholder="___-__-__"
+        />
+      </Lable>
+      <Button type="submit">Add contact</Button>
+    </Forma>
+  );
+};
+
+Form.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+};
